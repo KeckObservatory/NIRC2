@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>NIRC2 Spectroscopy Format Simulator</title>
+  <link rel=stylesheet type="text/css" href="css/nirc2layout.css">
+  <script type="text/javascript" src="./data/jsonloader.js"></script>
+
+  <script src="https://code.jquery.com/jquery-1.12.4.js" type="text/javascript" ></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" type="text/javascript" ></script>
+</head>
+<body>
+
+<div id="full">
+  <div id='container' >
+
+    <div id="detector" >
+      <div id="cuton" class="wavelength">on</div>
+        <div id="draggable" >
+        </div>
+      <div id="cutoff" class="wavelength">off</div>
+    </div>
+
+    <div class="echellebg">
+      <canvas id="echelle" >Your Browser Does Not Support HTML5 Canvas</canvas>
+    </div>
+
+  </div>
+
+
+
+  <div id="ui" >
+
+    <div id="header">
+      <p id="title">NIRC2 Spectroscopy Format Simulator</p>
+      <img id="logo" src="css/keck-logo-small.png">
+      <p id="keck">Keck Observatory</p>
+    </div>
+
+
+
+    <div id="ui-top">
+
+      <div id="spectra" class="interface d1">
+        <div id="spectrumcontainer">
+          <img id="spectrumgraph" class="data graph" src="" ></img>
+        </div>
+        <div id="popupcontainer">
+          <img id="popup" class = "graph" src="" onclick=""></img>
+        </div>
+      </div>
+
+      <div id="settings" class="interface d2">
+        <div id="toggle" class="data" value="red">
+            Zoom: <input type="range" id="zoom" class="settings-item" min="1" max="40" value="10" onchange="update()"/><br>
+            <select id="switchGrism" class="settings-item" onChange="update();">
+              <option value=''>Grism</option>
+              <option value='lowres'>lowres</option>
+              <option value='medres'>medres</option>
+            </select>
+            <select id="switchCamera" class="settings-item" onChange="update();">
+              <option value=''>Camera</option>
+              <option value='wide'>Wide</option>
+              <option value='medium'>Medium</option>
+              <option value='narrow'>Narrow</option>
+            </select>
+            <select id="switchFilter" class="settings-item" onChange="update();">
+              <option value=''>Filter</option>
+              <option value='J5'>J5</option>
+              <option value='J6'>J6</option>
+              <option value='H'>H</option>
+              <option value='K'>K</option>
+              <option value='Lp'>Lp</option>
+              <option value='Lw'>Lw</option>
+            </select>
+            <br>
+            <div class="checks">
+              <p>Ar</p>
+              <input type="checkbox" id="Argon" checked onChange="update();">
+            </div>
+            <div class="checks">
+              <p>Kr</p>
+              <input type="checkbox" id="Krypton" checked onChange="update();">
+            </div>
+            <div class="checks">
+              <p>Ne</p>
+              <input type="checkbox" id="Neon" checked onChange="update();">
+            </div>
+            <div class="checks">
+              <p>Xe</p>
+              <input type="checkbox" id="Xenon" checked onChange="update();">
+            </div>
+          </div>
+        </div>
+
+    </div>
+
+    <br>
+
+    <div id="ui-bottom">
+
+      <div id="info" class="interface d1" >
+        <div id="Center" class="data">Center</div>
+        <br>
+        <div id="Slit" class="data">Slit</div>
+        <br>
+        <div class="data">
+          <div id="Cut-On">Cut-On</div>
+          <br>
+          <div id="Cut-Off">Cut-Off</div>
+        </div>
+        <br>
+        <div id="CursorLambda" class="data">Cursor</div>
+
+      </div>
+
+      <div id="input" class="interface d2" >
+        <div id="FindLambda" class="data locwave">Locate Wavelength: <br><input type="text" id="lambdainput" value=0 />μm<br>
+          <input class="SetDetectorPosition" type="button" value="Mark" onClick="findLambdaLocation($('#lambdainput').val(),set=true,add=true);") />
+          <input class="ClearMarkers" type="button" value="Clear" onClick="clearMarkers();") />
+        </div><br>
+
+        <div class="data">
+          Object X:
+          <input id="FindX" type="number" value=512 max="1024" min="0" onchange="setObjectLocation();" onclick="setObjectLocation();" />
+          <br>
+          Object Y:
+          <input id="FindY" type="number" value=512 max="1024" min="0" onchange="setObjectLocation();" onclick="setObjectLocation();"/>
+          <br>
+        </div><br>
+
+        <div class="data">
+          <div class="dropdown">
+            <button>More</button>
+
+            <ul class="dropdown-menu">
+                <li><a href="https://www2.keck.hawaii.edu/inst/nirc2/" target="_blank">NIRC2 Home</a></li>
+                <li><a href="./nirc2sim.html">Reset</a></li>
+                <li><a id='export' href="#" onclick="exportEchelle();">Export (Firefox/Safari only)</a></li>
+            </ul>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script type="text/javascript" src="nirc2sim.js"></script>
+
+</body>
+</html>
