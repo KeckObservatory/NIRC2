@@ -198,6 +198,7 @@ function drawExposure() {
 
     $('#spectrumgraph').attr("src", url);
     $('#popup').attr("src", url);
+    $('#popup').css('border', '1px solid black');
 
     if (cam == "narrow") {
         ARCSECONDS_PER_PIXEL = 0.010 // arcsec / pixel
