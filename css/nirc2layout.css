@@ -122,12 +122,10 @@ select {
     align-items: center;
     justify-content: center;
 }
-
 #logo {
     float:left;
     margin-right: 10px;
 }
-
 #keck {
     margin-left:10px;
     margin-top: auto;
@@ -185,12 +183,10 @@ select {
     display: inline-block;
     margin-right: 10px;
 }
-
 #ui-top {
     min-height:30%;
     width: 100%;
 }
-
 #ui-bottom {
     margin: 0 auto;
     width: 100%;
@@ -217,6 +213,7 @@ select {
     height: 100%;
     width:50%;
 }
+
 #spectra {
     display: block;
     width: 60%;
@@ -258,6 +255,7 @@ select {
     width:30%;
     position:relative;
 }
+
 #toggle {
     position: absolute;
     transform: translate(-15%,0%);
@@ -265,6 +263,7 @@ select {
     padding-right: 10px;
     margin-left: 0px;
 }
+
 #zoom {
     width: 80%;
 }
@@ -426,7 +425,6 @@ select:focus, select:active {
     background-repeat:no-repeat;
     background-position: right 0.5em top 0.75em;
     background-size: 8px 8px;
-
 }
 
 /** List Item Styles **/
@@ -437,7 +435,6 @@ select:focus, select:active {
     color: #333333;
     font-family: 'Open Sans', sans-serif;
     border-bottom:0;
-
 }
 
 /** List Item Hover Styles **/

@@ -145,9 +145,7 @@ function findLambdaLocation(lambda, set=false, add=false) {
 
     if (set) {
 
-        drawX(pix);
-        ctx.font="10px Georgia";
-        ctx.fillText(lambda+" μm",ecwidth-pix[0],pix[1]-8);
+        mark(pix,lambda+" μm");
 
         if (add) {
             plottedwavelengths.push(lambda);
@@ -157,6 +155,12 @@ function findLambdaLocation(lambda, set=false, add=false) {
 
     return pix;
 
+}
+
+function mark(px,text) {
+    drawX(px);
+    ctx.font="10px Georgia";
+    ctx.fillText(text,ecwidth-px[0]+3,px[1]-8);
 }
 
 function drawX(xpos) {
@@ -173,7 +177,7 @@ function drawX(xpos) {
 }
 
 
-function drawExposure() {
+function drawExposure(toExport=false) {
 
     ecwidth = parseInt($('#container').css("width"));
     echeight=ecwidth;
@@ -272,12 +276,22 @@ function drawExposure() {
     detectorpos = transform_mm_to_screen_pixels([xdetector_pix_to_mm(detector_cuts[0]),ycenter_mm]);
 
     var slit_mm = parseFloat(data[grism][filter][cam]["slit_const"])-xobj_mm;
+    var slit_spx = transform_mm_to_screen_pixels([xdetector_pix_to_mm(get_filt_passband(slit_mm)[0]),yobj_mm]);
 
     $('#Slit').html("Slit: "+(slit_mm).toFixed(4).toString()+" μm ");
     $('#Center').html("Centered At:<br>"+data[grism][filter][cam]["slit_const"]+" μm<br>("+center[0]+", "+center[1]+")");
 
     ctx.beginPath();
     ctx.clearRect(0, 0, 2000, 2000);
+
+    if(toExport) {
+        fillBG();
+        mark([detectorpos[0],detectorpos[1]+detectordim[1]/2],detector_cuts[1].toFixed(3)+" μm ");
+        mark([detectorpos[0]+detectordim[0],detectorpos[1]-detectordim[1]/2],detector_cuts[0].toFixed(3)+" μm ");
+        mark([ecwidth-cuton_spx[0],cuton_spx[1]],filter_cuton.toFixed(3)+" μm ");
+        mark([ecwidth-cutoff_spx[0],cutoff_spx[1]],filter_cutoff.toFixed(3)+" μm ");
+        mark([slit_spx[0],slit_spx[1]+4*ZOOM],slit_mm.toFixed(3)+" μm ");
+    }
 
     // detector box
     ctx.beginPath();
@@ -337,8 +351,6 @@ function drawExposure() {
     }
 
     //draw slit
-    var slit_spx = transform_mm_to_screen_pixels([xdetector_pix_to_mm(get_filt_passband(slit_mm)[0]),yobj_mm]);
-
     // green if within range, otherwise it's red
     if(slit_mm > filter_cuton && slit_mm < filter_cutoff) ctx.strokeStyle = 'rgba(0, 200, 0, 1)';
     else ctx.strokeStyle = 'rgba(200, 0, 0, 1)';
@@ -348,6 +360,12 @@ function drawExposure() {
     ctx.moveTo(ecwidth-slit_spx[0],slit_spx[1]+Y_UPPER_LIMIT);
     ctx.lineTo(ecwidth-slit_spx[0],slit_spx[1]-Y_UPPER_LIMIT);
     ctx.stroke();
+
+
+    // draw
+    plottedwavelengths.forEach(function(l) {
+        findLambdaLocation(l,set=true);
+    })
 
 }
 
@@ -434,8 +452,8 @@ function fillBG() {
     ctx.beginPath();
     ctx.clearRect(0, 0, 1000, 2000);
 
+    ctx.fillStyle = "gray";
     ctx.rect(0, 0, 1000, 2000);
-    ctx.fillStyle = "black";
     ctx.fill();
 
     //console.log('done filling bg')
@@ -443,8 +461,7 @@ function fillBG() {
 
 
 function exportEchelle() {
-    fillBG();
-    drawExposure();
+    drawExposure(true);
 
     var expimg = echellecanvas.toDataURL("image/png");
     window.open(expimg,'blank');
@@ -460,8 +477,37 @@ function update() {
     ctx.clearRect(0, 0, 1000, 2000);
 
     drawExposure();
-
 }
 
-window.onload = drawExposure();
+function detectVersion() {
+    // Opera 8.0+
+    var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
+    // Firefox 1.0+
+    var isFirefox = typeof InstallTrigger !== 'undefined';
+
+    // Safari 3.0+ "[object HTMLElementConstructor]"
+    var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+
+    // Internet Explorer 6-11
+    var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+    // Edge 20+
+    var isEdge = !isIE && !!window.StyleMedia;
+
+    // Chrome 1+
+    var isChrome = !!window.chrome && !!window.chrome.webstore;
+
+    // Blink engine detection
+    var isBlink = (isChrome || isOpera) && !!window.CSS;
+
+
+    if (isSafari) alert("Warning: zoom slider is unreliable in Safari");
+    if (isChrome) alert("Warning: export function does not work in Chrome");
+    if (isIE) alert("Warning: export function does not work in Internet Explorer");
+
+    drawExposure();
+}
+
+window.onload = detectVersion();
 window.onload = setObjectLocation();
