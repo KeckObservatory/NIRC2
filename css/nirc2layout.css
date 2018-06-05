@@ -332,6 +332,7 @@ select:focus, select:active {
     z-index: 1;
     margin-left: -40px;
     width:80px;
+    height: 1em;
 }
 
 .wavelength::after {
@@ -340,6 +341,30 @@ select:focus, select:active {
     border-width: 5px;
     border-style: solid;
     margin-left:-5px;
+}
+
+#slit:after, #slit:before {
+	right: 100%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+/* #slit:after {
+	border-color: rgba(255, 255, 255, 0);
+	border-right-color: #ffffff;
+	border-width: 5px;
+	margin-top: -5px;
+} */
+#slit:before {
+	border-color: rgba(0, 0, 0, 0);
+	border-right-color: #000000;
+	border-width: 6px;
+	margin-top: -6px;
 }
 
 #cuton {

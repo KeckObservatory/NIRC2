@@ -314,6 +314,10 @@ function drawExposure(toExport=false) {
     detectordraggable.css("top", detectorpos[1].toString() + 'px');
     detectordraggable.css("height", detectordim[1].toString() + 'px');
 
+    $('#slit').css("left", (ecwidth-(slit_spx[0])+63).toString() + 'px');
+    $('#slit').css("top", (detectorpos[1]-80).toString() + 'px');
+    $('#slit').html(slit_mm.toFixed(4).toString()+" μm ")
+
     // now draw the spectral test lines
     var SPEC_LINES = [];
     var list = [];
@@ -352,8 +356,14 @@ function drawExposure(toExport=false) {
 
     //draw slit
     // green if within range, otherwise it's red
-    if(slit_mm > filter_cuton && slit_mm < filter_cutoff) ctx.strokeStyle = 'rgba(0, 200, 0, 1)';
-    else ctx.strokeStyle = 'rgba(200, 0, 0, 1)';
+    if(slit_mm > filter_cuton && slit_mm < filter_cutoff) {
+        ctx.strokeStyle = 'rgba(0, 200, 0, 1)';
+        $('#slit').css("color","green");
+    }
+    else {
+        ctx.strokeStyle = 'rgba(200, 0, 0, 1)';
+        $('#slit').css("color","red");
+    }
 
     ctx.beginPath();
     ctx.lineWidth = 1;
@@ -451,12 +461,9 @@ function clearMarkers() {
 function fillBG() {
     ctx.beginPath();
     ctx.clearRect(0, 0, 1000, 2000);
-
     ctx.fillStyle = "gray";
     ctx.rect(0, 0, 1000, 2000);
     ctx.fill();
-
-    //console.log('done filling bg')
 }
 
 
@@ -471,7 +478,6 @@ function exportEchelle() {
 
 
 function update() {
-    // console.log("updating echelle");
     ZOOM = parseFloat($('#zoom').val())/2;
     ctx.beginPath();
     ctx.clearRect(0, 0, 1000, 2000);
@@ -480,27 +486,11 @@ function update() {
 }
 
 function detectVersion() {
-    // Opera 8.0+
-    var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-
-    // Firefox 1.0+
     var isFirefox = typeof InstallTrigger !== 'undefined';
-
-    // Safari 3.0+ "[object HTMLElementConstructor]"
-    var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
-
-    // Internet Explorer 6-11
+    var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     var isIE = /*@cc_on!@*/false || !!document.documentMode;
-
-    // Edge 20+
     var isEdge = !isIE && !!window.StyleMedia;
-
-    // Chrome 1+
     var isChrome = !!window.chrome && !!window.chrome.webstore;
-
-    // Blink engine detection
-    var isBlink = (isChrome || isOpera) && !!window.CSS;
-
 
     if (isSafari) alert("Warning: zoom slider is unreliable in Safari");
     if (isChrome) alert("Warning: export function does not work in Chrome");
