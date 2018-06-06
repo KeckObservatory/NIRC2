@@ -19,13 +19,13 @@
 
     <div id="detector" >
       <div id="cuton" class="wavelength">on</div>
-        <div id="draggable" >
-        </div>
+        <div id="draggable" ></div>
       <div id="cutoff" class="wavelength">off</div>
     </div>
 
     <div class="echellebg">
       <canvas id="echelle" >Your Browser Does Not Support HTML5 Canvas</canvas>
+      <div id="marker"><div id="cur" class="wavelength"><p class="cursor"></p></div></div>
     </div>
 
   </div>
@@ -51,25 +51,25 @@
           <img id="spectrumgraph" class="data graph" src="" ></img>
         </div>
         <div id="popupcontainer">
-          <img id="popup" class = "graph" src="" onclick=""></img>
+          <img id="popup" class = "graph" src="" ></img>
         </div>
       </div>
 
       <div id="settings" class="interface d2">
-        <div id="toggle" class="data" value="red">
+        <div id="toggle" class="data" >
             Zoom: <input type="range" id="zoom" class="settings-item" min="1" max="40" value="10" onchange="update()"/><br>
-            <select id="switchGrism" class="settings-item" onChange="update();">
+            <select id="switchGrism" class="settings-item update" >
               <option value=''>Grism</option>
               <option value='lowres'>lowres</option>
               <option value='medres'>medres</option>
             </select>
-            <select id="switchCamera" class="settings-item" onChange="update();">
+            <select id="switchCamera" class="settings-item update" >
               <option value=''>Camera</option>
               <option value='wide'>Wide</option>
               <option value='medium'>Medium</option>
               <option value='narrow'>Narrow</option>
             </select>
-            <select id="switchFilter" class="settings-item" onChange="update();">
+            <select id="switchFilter" class="settings-item update" >
               <option value=''>Filter</option>
               <option value='J5'>J5</option>
               <option value='J6'>J6</option>
@@ -81,19 +81,19 @@
             <br>
             <div class="checks">
               <p>Ar</p>
-              <input type="checkbox" id="Argon" checked onChange="update();">
+              <input type="checkbox" class="update" id="Argon" checked />
             </div>
             <div class="checks">
               <p>Kr</p>
-              <input type="checkbox" id="Krypton" checked onChange="update();">
+              <input type="checkbox" class="update" id="Krypton" checked />
             </div>
             <div class="checks">
               <p>Ne</p>
-              <input type="checkbox" id="Neon" checked onChange="update();">
+              <input type="checkbox" class="update" id="Neon" checked />
             </div>
             <div class="checks">
               <p>Xe</p>
-              <input type="checkbox" id="Xenon" checked onChange="update();">
+              <input type="checkbox" class="update" id="Xenon" checked />
             </div>
           </div>
         </div>
@@ -115,7 +115,7 @@
           <div id="Cut-Off">Cut-Off</div>
         </div>
         <br>
-        <div id="CursorLambda" class="data">Cursor</div>
+        <div id="CursorLambda" class="data">Lambda (at Cursor):<p class="cursor"></p></div>
 
       </div>
 

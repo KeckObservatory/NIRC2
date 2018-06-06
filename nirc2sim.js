@@ -314,7 +314,12 @@ function drawExposure(toExport=false) {
     detectordraggable.css("top", detectorpos[1].toString() + 'px');
     detectordraggable.css("height", detectordim[1].toString() + 'px');
 
-    $('#slit').css("left", (ecwidth-(slit_spx[0])+63).toString() + 'px');
+    // var transform = 100*((detectorpos[1]+detectordim[1]-80)/ecwidth).toFixed(2);
+    // console.log(transform);
+    $('#cur').css('transform', 'translate(-60%,0)');
+    $('#cur').css('top',(detectorpos[1]+detectordim[1]-70).toString()+'px');
+
+    $('#slit').css("left", (ecwidth-(slit_spx[0])+60).toString() + 'px');
     $('#slit').css("top", (detectorpos[1]-80).toString() + 'px');
     $('#slit').html(slit_mm.toFixed(4).toString()+" μm ")
 
@@ -357,7 +362,7 @@ function drawExposure(toExport=false) {
     //draw slit
     // green if within range, otherwise it's red
     if(slit_mm > filter_cuton && slit_mm < filter_cutoff) {
-        ctx.strokeStyle = 'rgba(0, 200, 0, 1)';
+        ctx.strokeStyle = 'rgba(0, 255, 0, 1)';
         $('#slit').css("color","green");
     }
     else {
@@ -377,56 +382,6 @@ function drawExposure(toExport=false) {
         findLambdaLocation(l,set=true);
     })
 
-}
-
-
-function getMouse(e){
-
-    var posx;
-    var posy;
-
-    if (!e) var e = window.event;
-
-    if (e.pageX || e.pageY) {
-        posx = e.pageX + $('#container').scrollLeft;
-        posy = e.pageY + $('#container').scrollTop;
-    }
-    else if (e.clientX || e.clientY) {
-        posx = e.clientX + $('#container').scrollLeft;
-        posy = e.clientY + $('#container').scrollTop;
-    }
-
-    return [posx,posy];
-
-}
-
-
-document.onmousemove = handleMouseMove;
-function handleMouseMove(e) {
-    var eventDoc, doc, body, pageX, pageY;
-
-    var posx;
-    var posy;
-
-    if (!e) var e = window.event;
-
-    if (e.pageX || e.pageY) {
-        posx = e.pageX - X_LOWER_LIMIT;
-        posy = e.pageY - Y_LOWER_LIMIT;
-    }
-    else if (e.clientX || e.clientY) {
-        posx = e.clientX - X_LOWER_LIMIT;
-        posy = e.clientY - Y_LOWER_LIMIT;
-    }
-
-    if (posx < X_UPPER_LIMIT && posy < Y_UPPER_LIMIT) {
-        if (posx > X_LOWER_LIMIT && posy > Y_LOWER_LIMIT) {
-            adjusted_x = posx;
-            adjusted_y = posy;
-            var lambda = findLambda(adjusted_x,adjusted_y);
-            $('#CursorLambda').html("Lambda (at Cursor): "+lambda.toFixed(3).toString()+" μm ");
-        }
-    }
 }
 
 
@@ -499,5 +454,75 @@ function detectVersion() {
     drawExposure();
 }
 
-window.onload = detectVersion();
-window.onload = setObjectLocation();
+/*
+* EVENT HANDLERS
+*/
+$('#switchCamera').change(function() {
+    var maxZoom;
+    if ($('#switchCamera').val() == 'wide') maxZoom = 32;
+    else if ($('#switchCamera').val() == 'medium') maxZoom = 60;
+    else if ($('#switchCamera').val() == 'narrow') maxZoom = 100;
+
+    $('#zoom').attr('max', maxZoom.toString());
+    if (parseInt($('#zoom').val()) > maxZoom) $('#zoom').val(maxZoom.toString());
+
+});
+
+$('.update').change(update);
+
+function getMouse(e){
+
+    var posx;
+    var posy;
+
+    if (!e) var e = window.event;
+
+    if (e.pageX || e.pageY) {
+        posx = e.pageX + $('#container').scrollLeft;
+        posy = e.pageY + $('#container').scrollTop;
+    }
+    else if (e.clientX || e.clientY) {
+        posx = e.clientX + $('#container').scrollLeft;
+        posy = e.clientY + $('#container').scrollTop;
+    }
+
+    return [posx,posy];
+
+}
+
+
+$(document).on('mousemove', function handleMouseMove(e) {
+    var eventDoc, doc, body, pageX, pageY;
+
+    var posx;
+    var posy;
+
+    if (!e) var e = window.event;
+
+    if (e.pageX || e.pageY) {
+        posx = e.pageX - X_LOWER_LIMIT;
+        posy = e.pageY;
+    }
+    else if (e.clientX || e.clientY) {
+        posx = e.clientX - X_LOWER_LIMIT;
+        posy = e.clientY;
+    }
+
+    if (posx < ecwidth && posy < Y_UPPER_LIMIT && posx > 0 && posy > Y_LOWER_LIMIT) {
+        adjusted_x = posx;
+        adjusted_y = posy;
+        var lambda = findLambda(adjusted_x,adjusted_y);
+        $('.cursor').html(lambda.toFixed(3).toString()+" μm ");
+        $('#marker').show();
+        $('#marker').css('left', posx.toString()+'px');
+    }
+    else {
+        $('#marker').hide();
+    }
+});
+
+$(window).on('load', function() {
+    detectVersion();
+    setObjectLocation();
+    $('#marker').hide();
+});
