@@ -224,9 +224,10 @@ select {
 
 #spectra {
     display: block;
-    width: 60%;
+    width: 50%;
     height: 100%;
     border:none;
+    margin-right: 10%;
 }
 
 #spectra #spectrumcontainer {
@@ -390,6 +391,10 @@ select:focus, select:active {
     margin-left: -40px;
     width:80px;
     height: 1em;
+}
+
+.wavelength p{
+    text-align: center;
 }
 
 .wavelength::after {

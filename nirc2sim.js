@@ -21,6 +21,10 @@ var YRANGE = Y_UPPER_LIMIT - Y_LOWER_LIMIT;
 
 var yobj_mm,xobj_mm;
 var plottedwavelengths=[];
+var lastWv=0;
+var lastWvHeight=0;
+
+var currentMouseLambda;
 
 function updateDistance() {
     ecwidth = parseInt($('#container').css("width"));
@@ -40,9 +44,6 @@ function updateDistance() {
     XRANGE = X_UPPER_LIMIT - X_LOWER_LIMIT;
     YRANGE = Y_UPPER_LIMIT - Y_LOWER_LIMIT;
 }
-
-window.onload = updateDistance;
-document.onResize = updateDistance;
 
 var url;
 
@@ -308,8 +309,8 @@ function drawExposure(toExport=false) {
     ctx.lineTo(cutoff_spx[0],cutoff_spx[1]);
     ctx.stroke();
 
-    detectorpos[0] += X_LOWER_LIMIT;
-    detectorpos[1] += (Y_LOWER_LIMIT-detectordim[1]/2);
+    // detectorpos[0] += X_LOWER_LIMIT;
+    detectorpos[1] -= (detectordim[1]/2);
     detectordraggable.css("left", detectorpos[0].toString() + 'px');
     detectordraggable.css("top", detectorpos[1].toString() + 'px');
     detectordraggable.css("height", detectordim[1].toString() + 'px');
@@ -319,9 +320,15 @@ function drawExposure(toExport=false) {
     $('#cur').css('transform', 'translate(-60%,0)');
     $('#cur').css('top',(detectorpos[1]+detectordim[1]-70).toString()+'px');
 
-    $('#slit').css("left", (ecwidth-(slit_spx[0])+60).toString() + 'px');
-    $('#slit').css("top", (detectorpos[1]-80).toString() + 'px');
-    $('#slit').html(slit_mm.toFixed(4).toString()+" μm ")
+    var leftOffset = ecwidth-(slit_spx[0])+60;
+    if (leftOffset+20 < ecwidth) {
+        $('#slit').css("left", leftOffset.toString() + 'px');
+        $('#slit').css("top", (detectorpos[1]-60).toString() + 'px');
+        $('#slit').html(slit_mm.toFixed(4).toString()+" μm ");
+    }
+    else {
+        $('#slit').hide();
+    }
 
     // now draw the spectral test lines
     var SPEC_LINES = [];
@@ -470,26 +477,15 @@ $('#switchCamera').change(function() {
 
 $('.update').change(update);
 
-function getMouse(e){
+$('.SetDetectorPosition').on('click', function() {
+    findLambdaLocation($('#lambdainput').val(),set=true,add=true);
+});
 
-    var posx;
-    var posy;
+$('.ClearMarkers').on('click', clearMarkers);
 
-    if (!e) var e = window.event;
-
-    if (e.pageX || e.pageY) {
-        posx = e.pageX + $('#container').scrollLeft;
-        posy = e.pageY + $('#container').scrollTop;
-    }
-    else if (e.clientX || e.clientY) {
-        posx = e.clientX + $('#container').scrollLeft;
-        posy = e.clientY + $('#container').scrollTop;
-    }
-
-    return [posx,posy];
-
-}
-
+$('.echellebg').on('click', function() {
+    findLambdaLocation(currentMouseLambda.toFixed(3).toString(),set=true,add=true);
+});
 
 $(document).on('mousemove', function handleMouseMove(e) {
     var eventDoc, doc, body, pageX, pageY;
@@ -511,10 +507,10 @@ $(document).on('mousemove', function handleMouseMove(e) {
     if (posx < ecwidth && posy < Y_UPPER_LIMIT && posx > 0 && posy > Y_LOWER_LIMIT) {
         adjusted_x = posx;
         adjusted_y = posy;
-        var lambda = findLambda(adjusted_x,adjusted_y);
-        $('.cursor').html(lambda.toFixed(3).toString()+" μm ");
+        currentMouseLambda = findLambda(adjusted_x,adjusted_y);
+        $('.cursor').html(currentMouseLambda.toFixed(3).toString()+" μm ");
         $('#marker').show();
-        $('#marker').css('left', posx.toString()+'px');
+        $('#marker').css('left', (posx+1).toString()+'px');
     }
     else {
         $('#marker').hide();
@@ -522,7 +518,12 @@ $(document).on('mousemove', function handleMouseMove(e) {
 });
 
 $(window).on('load', function() {
+    $('.wavelength').hide();
+    updateDistance();
     detectVersion();
     setObjectLocation();
+
     $('#marker').hide();
 });
+
+$(document).on('resize', updateDistance);

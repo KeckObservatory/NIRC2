@@ -17,15 +17,14 @@
 
     <div id="slit" class="wavelength">slit</div>
 
-    <div id="detector" >
-      <div id="cuton" class="wavelength">on</div>
-        <div id="draggable" ></div>
-      <div id="cutoff" class="wavelength">off</div>
-    </div>
-
     <div class="echellebg">
       <canvas id="echelle" >Your Browser Does Not Support HTML5 Canvas</canvas>
       <div id="marker"><div id="cur" class="wavelength"><p class="cursor"></p></div></div>
+      <div id="detector" >
+        <div id="cuton" class="wavelength">on</div>
+          <div id="draggable" ></div>
+        <div id="cutoff" class="wavelength">off</div>
+      </div>
     </div>
 
   </div>
@@ -121,8 +120,8 @@
 
       <div id="input" class="interface d2" >
         <div id="FindLambda" class="data locwave">Locate Wavelength: <br><input type="text" id="lambdainput" value=0 />μm<br>
-          <input class="SetDetectorPosition" type="button" value="Mark" onClick="findLambdaLocation($('#lambdainput').val(),set=true,add=true);") />
-          <input class="ClearMarkers" type="button" value="Clear" onClick="clearMarkers();") />
+          <input class="SetDetectorPosition" type="button" value="Mark" />
+          <input class="ClearMarkers" type="button" value="Clear" />
         </div><br>
 
         <div class="data">
