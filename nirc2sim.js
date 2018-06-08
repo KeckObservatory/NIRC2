@@ -24,6 +24,8 @@ var plottedwavelengths=[];
 var lastWv=0;
 var lastWvHeight=0;
 
+var contextMenuActive=false;
+
 var currentMouseLambda;
 
 function updateDistance() {
@@ -482,10 +484,6 @@ $('.SetDetectorPosition').on('click', function() {
 
 $('.ClearMarkers').on('click', clearMarkers);
 
-$('.echellebg').on('click', function() {
-    findLambdaLocation(currentMouseLambda.toFixed(3).toString(),set=true,add=true);
-});
-
 $(document).on('mousemove', function handleMouseMove(e) {
     var eventDoc, doc, body, pageX, pageY;
 
@@ -540,6 +538,8 @@ $('#container').bind("contextmenu", function (event) {
         top: event.pageY + "px",
         left: event.pageX + "px"
     });
+
+    contextMenuActive=true;
 });
 
 
@@ -547,10 +547,10 @@ $('#container').bind("contextmenu", function (event) {
 $(document).bind("mousedown", function (event) {
 
     // If the clicked element is not the menu
-    if (!$(event.target).parents(".context-menu").length > 0) {
-
+    if (!$(event.target).parents(".context-menu").length > 0 ) {
         // Hide it
         $(".context-menu").hide(100);
+        if($(event.target).attr('id') != 'echelle') contextMenuActive=false;
     }
 });
 
@@ -568,4 +568,10 @@ $(".context-menu li").click(function(){
 
     // Hide it AFTER the action was triggered
     $(".context-menu").hide(100);
+    contextMenuActive=false;
+  });
+
+  $('.echellebg').on('click', function() {
+      if (!contextMenuActive) findLambdaLocation(currentMouseLambda.toFixed(3).toString(),set=true,add=true);
+      contextMenuActive=false;
   });
