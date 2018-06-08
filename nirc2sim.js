@@ -318,7 +318,6 @@ function drawExposure(toExport=false) {
     // var transform = 100*((detectorpos[1]+detectordim[1]-80)/ecwidth).toFixed(2);
     // console.log(transform);
     $('#cur').css('transform', 'translate(-60%,0)');
-    $('#cur').css('top',(detectorpos[1]+detectordim[1]-70).toString()+'px');
 
     var leftOffset = ecwidth-(slit_spx[0])+60;
     if (leftOffset+20 < ecwidth) {
@@ -511,6 +510,7 @@ $(document).on('mousemove', function handleMouseMove(e) {
         $('.cursor').html(currentMouseLambda.toFixed(3).toString()+" μm ");
         $('#marker').show();
         $('#marker').css('left', (posx+1).toString()+'px');
+        $('#cur').css('top',(posy-Y_LOWER_LIMIT-8).toString()+'px');
     }
     else {
         $('#marker').hide();
@@ -527,3 +527,45 @@ $(window).on('load', function() {
 });
 
 $(document).on('resize', updateDistance);
+
+// Trigger action when the contexmenu is about to be shown
+$('#container').bind("contextmenu", function (event) {
+
+    // Avoid the real one
+    event.preventDefault();
+
+    // Show contextmenu
+    $(".context-menu").css({
+        display:"block",
+        top: event.pageY + "px",
+        left: event.pageX + "px"
+    });
+});
+
+
+// If the document is clicked somewhere
+$(document).bind("mousedown", function (event) {
+
+    // If the clicked element is not the menu
+    if (!$(event.target).parents(".context-menu").length > 0) {
+
+        // Hide it
+        $(".context-menu").hide(100);
+    }
+});
+
+
+// If the menu element is clicked
+$(".context-menu li").click(function(){
+
+    // This is the triggered action name
+    switch($(this).attr("data-action")) {
+
+        // A case for each action. Your actions here
+        case "clear": clearMarkers(); break;
+        case "export": exportEchelle(); break;
+    }
+
+    // Hide it AFTER the action was triggered
+    $(".context-menu").hide(100);
+  });
