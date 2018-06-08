@@ -510,7 +510,7 @@ $(document).on('mousemove', function handleMouseMove(e) {
         $('.cursor').html(currentMouseLambda.toFixed(3).toString()+" μm ");
         $('#marker').show();
         $('#marker').css('left', (posx+1).toString()+'px');
-        $('#cur').css('top',(posy-Y_LOWER_LIMIT-8).toString()+'px');
+        $('#cur').css('top',(posy-Y_LOWER_LIMIT-16).toString()+'px');
     }
     else {
         $('#marker').hide();
