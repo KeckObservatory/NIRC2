@@ -29,7 +29,7 @@
 
             <ul class="context-menu">
                 <li data-action="clear">Clear Markers</li>
-                <li data-action="export">Export</li>
+                <li class='export' data-action="export">Export</li>
             </ul>
 
         </div>
@@ -61,7 +61,7 @@
 
                 <div id="settings" class="interface d2">
                     <div id="toggle" class="data" >
-                        Zoom: <input type="range" id="zoom" class="settings-item" min="1" max="40" value="10" onchange="update()"/><br>
+                        <div id="zoom-container">Zoom: <input type="range" id="zoom" class="settings-item" min="1" max="40" value="10" onchange="update()"/></div>
                         <select id="switchGrism" class="settings-item update" >
                             <option value=''>Grism</option>
                             <option value='lowres'>lowres</option>
@@ -145,7 +145,7 @@
                             <ul class="dropdown-menu">
                                 <li><a href="https://www2.keck.hawaii.edu/inst/nirc2/" target="_blank">NIRC2 Home</a></li>
                                 <li><a href="./nirc2sim.html">Reset</a></li>
-                                <li id='final'><a id='export' href="#" onclick="exportEchelle();">Export (Firefox/Safari only)</a></li>
+                                <li id='final'><a class='export' href="#" onclick="exportEchelle();">Export (Firefox/Safari only)</a></li>
                             </ul>
                         </div>
 
@@ -156,6 +156,8 @@
             </div>
 
         </div>
+
+        <div class="warning data">Firefox is the preferred browser for this web app, on other browsers certain functionality will be unavailable.</div>
 
     </div>
 

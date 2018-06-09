@@ -555,3 +555,19 @@ select:focus, select:active {
 .context-menu li:hover {
     background-color: #DEF;
 }
+
+.warning {
+    position: absolute;
+    right:0;
+    bottom:0;
+    background-color: white;
+    border-radius: 0;
+    border-top:1px solid black;
+    width:100%;
+    display:none;
+}
+
+#zoom-container {
+    margin:0;
+    padding:0;
+}

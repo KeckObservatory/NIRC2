@@ -45,6 +45,8 @@ function updateDistance() {
     X_UPPER_LIMIT+=10;
     XRANGE = X_UPPER_LIMIT - X_LOWER_LIMIT;
     YRANGE = Y_UPPER_LIMIT - Y_LOWER_LIMIT;
+
+    if (grism) update();
 }
 
 var url;
@@ -64,9 +66,9 @@ var PIXELS_PER_MM = 34.5016
 var xobj = $('#FindX').val();
 var yobj = $('#FindY').val();
 
-var cam = $('#switchCamera').val();
-var filter = $('#switchFilter').val();
-var grism = $('#switchGrism').val();
+var cam = '';
+var filter = '';
+var grism = '';
 
 var ARCSECONDS_PER_PIXEL = 0.010;
 const MARKER_COLOR = "white";
@@ -119,13 +121,16 @@ function get_filt_passband(lambda) {
 function findLambda(cursor_x, cursor_y) {
     // find the wavelength of mouse position (inverse of get_filt_passband)
 
-    curdata = data[grism][filter][cam];
-    var dpx = mm_to_xdetector_pix(transform_screen_pixels_to_mm(cursor_x,cursor_y)[0]);
-    lambda_cen = curdata["slit_slope"] * xobj + curdata["slit_const"]
+    if (grism) {
+        curdata = data[grism][filter][cam];
+        var dpx = mm_to_xdetector_pix(transform_screen_pixels_to_mm(cursor_x,cursor_y)[0]);
+        lambda_cen = curdata["slit_slope"] * xobj + curdata["slit_const"]
 
-    lambda = lambda_cen - curdata["disp"] * (center[0] - dpx);
+        lambda = lambda_cen - curdata["disp"] * (center[0] - dpx);
 
-    return lambda;
+        return lambda;
+    }
+    else return -1;
 }
 
 function findLambdaLocation(lambda, set=false, add=false) {
@@ -324,7 +329,9 @@ function drawExposure(toExport=false) {
     var leftOffset = ecwidth-(slit_spx[0])+60;
     if (leftOffset+20 < ecwidth) {
         $('#slit').css("left", leftOffset.toString() + 'px');
-        $('#slit').css("top", (detectorpos[1]-60).toString() + 'px');
+        var slitheight = (detectorpos[1]-60);
+        if (slitheight < Y_LOWER_LIMIT+16) slitheight = Y_LOWER_LIMIT + 16;
+        $('#slit').css("top", slitheight.toString() + 'px');
         $('#slit').html(slit_mm.toFixed(4).toString()+" μm ");
     }
     else {
@@ -455,9 +462,17 @@ function detectVersion() {
     var isEdge = !isIE && !!window.StyleMedia;
     var isChrome = !!window.chrome && !!window.chrome.webstore;
 
-    if (isSafari) alert("Warning: zoom slider is unreliable in Safari");
-    if (isChrome) alert("Warning: export function does not work in Chrome");
-    if (isIE) alert("Warning: export function does not work in Internet Explorer");
+    if (!isFirefox && !isSafari) $('.export').hide();
+    if (isSafari) {
+        $('#zoom-container').hide();
+        $('.warning').append(" In Safari, the zoom function is disabled.");
+    }
+    if (!isFirefox) $('.warning').show();
+    if (isChrome) $('.warning').append(" In Chrome, the export function is disabled.");
+
+    // if (isSafari) alert("Warning: zoom slider is unreliable in Safari");
+    // if (isChrome) alert("Warning: export function does not work in Chrome");
+    // if (isIE) alert("Warning: export function does not work in Internet Explorer");
 
     drawExposure();
 }
@@ -508,7 +523,8 @@ $(document).on('mousemove', function handleMouseMove(e) {
         $('.cursor').html(currentMouseLambda.toFixed(3).toString()+" μm ");
         $('#marker').show();
         $('#marker').css('left', (posx+1).toString()+'px');
-        $('#cur').css('top',(posy-Y_LOWER_LIMIT-16).toString()+'px');
+        var curheight=(posy-Y_LOWER_LIMIT-16);
+        $('#cur').css('top',curheight.toString()+'px');
     }
     else {
         $('#marker').hide();
@@ -524,7 +540,7 @@ $(window).on('load', function() {
     $('#marker').hide();
 });
 
-$(document).on('resize', updateDistance);
+$(window).resize(updateDistance);
 
 // Trigger action when the contexmenu is about to be shown
 $('#container').bind("contextmenu", function (event) {
