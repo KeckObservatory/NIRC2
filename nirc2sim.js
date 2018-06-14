@@ -209,8 +209,7 @@ function drawExposure(toExport=false) {
     url = ("https://www2.keck.hawaii.edu/inst/nirc2/filters/"+filter.replace(/\d/g, '')+".gif");
 
     $('#spectrumgraph').attr("src", url);
-    $('#popup').attr("src", url);
-    $('#popup').css('border', '1px solid black');
+    $('#popup').attr("src", url).css('border', '1px solid black');
 
     if (cam == "narrow") {
         ARCSECONDS_PER_PIXEL = 0.010 // arcsec / pixel
@@ -273,14 +272,15 @@ function drawExposure(toExport=false) {
 
     var obj_spx = transform_mm_to_screen_pixels([xobj_mm,yobj_mm]);
 
-    var detector = $('#draggable');
-    detector.css("display", "flex");
+    detector
     var detectordim = [ZOOM * 1024 / PIXELS_PER_MM, ZOOM * 1024 / PIXELS_PER_MM];
-    detector.css("width", detectordim[0].toString()+'px');
-    detector.css("width", detectordim[1].toString()+'px');
+    $('#draggable').css({
+        "display": "flex",
+        "width": detectordim[0].toString()+'px',
+        "height": detectordim[1].toString()+'px'
+    });
     $('.wavelength').show();
 
-    var detectordraggable = $('#detector');
     detectorpos = transform_mm_to_screen_pixels([xdetector_pix_to_mm(detector_cuts[0]),ycenter_mm]);
 
     var slit_mm = parseFloat(data[grism][filter][cam]["slit_const"])-xobj_mm;
@@ -318,22 +318,37 @@ function drawExposure(toExport=false) {
 
     // detectorpos[0] += X_LOWER_LIMIT;
     detectorpos[1] -= (detectordim[1]/2);
-    detectordraggable.css("left", detectorpos[0].toString() + 'px');
-    detectordraggable.css("top", detectorpos[1].toString() + 'px');
-    detectordraggable.css("height", detectordim[1].toString() + 'px');
+    $('#detector').css({
+        "left": detectorpos[0].toString() + 'px',
+        "top": detectorpos[1].toString() + 'px',
+        "height": detectordim[1].toString() + 'px'
+    });
 
     // var transform = 100*((detectorpos[1]+detectordim[1]-80)/ecwidth).toFixed(2);
     // console.log(transform);
-    $('#cur').css('transform', 'translate(-60%,0)');
+    $('#slit').html(slit_mm.toFixed(4).toString()+" μm ");
 
-    var leftOffset = ecwidth-(slit_spx[0])+60;
-    if (leftOffset+20 < ecwidth) {
-        $('#slit').css("left", leftOffset.toString() + 'px');
-        var slitheight = (detectorpos[1]-60);
-        if (slitheight < Y_LOWER_LIMIT+16) slitheight = Y_LOWER_LIMIT + 16;
-        $('#slit').css("top", slitheight.toString() + 'px');
-        $('#slit').html(slit_mm.toFixed(4).toString()+" μm ");
+    var leftOffset = ecwidth-(slit_spx[0])+18;
+    var slitheight = (detectorpos[1]-60);
+    if (slitheight < Y_LOWER_LIMIT+16) slitheight = Y_LOWER_LIMIT + 16;
+
+    $('#slit').css({
+        "left": leftOffset.toString() + 'px',
+        "top": slitheight.toString() + 'px'
+    });
+
+    if (leftOffset < ecwidth+X_LOWER_LIMIT-80) {
+
+        $('#slit').addClass('tooltip-right').removeClass('tooltip-left').css("transform", "translate(0,0)");
     }
+    else if (leftOffset < ecwidth+X_LOWER_LIMIT+10) {
+        $('#slit').addClass('tooltip-left').removeClass('tooltip-right').css("transform", "translate(-115%,0)");
+    }
+    // /* TODO make this stupid thing switch sides when in runs into the end */
+    // else if (leftOffset < ecwidth+60){
+    //     $('#slit').addClass('tooltip-left').removeClass('tooltip-right');
+    // }
+
     else {
         $('#slit').hide();
     }
@@ -521,10 +536,22 @@ $(document).on('mousemove', function handleMouseMove(e) {
         adjusted_y = posy;
         currentMouseLambda = findLambda(adjusted_x,adjusted_y);
         $('.cursor').html(currentMouseLambda.toFixed(3).toString()+" μm ");
-        $('#marker').show();
-        $('#marker').css('left', (posx+1).toString()+'px');
+        $('#marker').show().css('left', (posx).toString()+'px');
         var curheight=(posy-Y_LOWER_LIMIT-16);
-        $('#cur').css('top',curheight.toString()+'px');
+        $('#cur').css('top', curheight.toString()+'px');
+
+        if (posx < X_LOWER_LIMIT + 80) {
+            $('#cur').
+                css('transform','translate(10%,0)').
+                addClass('tooltip-right').
+                removeClass('tooltip-left');
+        }
+        else {
+            $('#cur').
+                css('transform','translate(-110%,0)').
+                addClass('tooltip-left').
+                removeClass('tooltip-right');
+        }
     }
     else {
         $('#marker').hide();
