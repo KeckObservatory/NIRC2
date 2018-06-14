@@ -344,10 +344,6 @@ function drawExposure(toExport=false) {
     else if (leftOffset < ecwidth+X_LOWER_LIMIT+10) {
         $('#slit').addClass('tooltip-left').removeClass('tooltip-right').css("transform", "translate(-115%,0)");
     }
-    // /* TODO make this stupid thing switch sides when in runs into the end */
-    // else if (leftOffset < ecwidth+60){
-    //     $('#slit').addClass('tooltip-left').removeClass('tooltip-right');
-    // }
 
     else {
         $('#slit').hide();
