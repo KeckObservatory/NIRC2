@@ -355,7 +355,8 @@ select:focus, select:active {
     position: absolute;
     margin-right: -40px;
     z-index: 1;
-    width:80px;
+    width:85px;
+    text-align: center;
     height: 1em;
     pointer-events: none;
 }

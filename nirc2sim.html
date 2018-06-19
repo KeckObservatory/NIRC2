@@ -61,20 +61,20 @@
 
                 <div id="settings" class="interface d2">
                     <div id="toggle" class="data" >
-                        <div id="zoom-container">Zoom: <input type="range" id="zoom" class="settings-item" min="1" max="40" value="10" onchange="update()"/></div>
+                        <div id="zoom-container">Zoom: <input type="range" id="zoom" class="settings-item" min="1" max="40" value="22" onchange="update()"/></div>
                         <select id="switchGrism" class="settings-item update" >
-                            <option value=''>Grism</option>
+                            <option value='lowres'>Grism</option>
                             <option value='lowres'>lowres</option>
                             <option value='medres'>medres</option>
                         </select>
                         <select id="switchCamera" class="settings-item update" >
-                            <option value=''>Camera</option>
+                            <option value='wide'>Camera</option>
                             <option value='wide'>Wide</option>
                             <option value='medium'>Medium</option>
                             <option value='narrow'>Narrow</option>
                         </select>
                         <select id="switchFilter" class="settings-item update" >
-                            <option value=''>Filter</option>
+                            <option value='K'>Filter</option>
                             <option value='J5'>J5</option>
                             <option value='J6'>J6</option>
                             <option value='H'>H</option>
@@ -85,11 +85,11 @@
                         <br>
                         <div class="checks">
                             <p>Ar</p>
-                            <input type="checkbox" class="update" id="Argon" checked />
+                            <input type="checkbox" class="update" id="Argon" />
                         </div>
                         <div class="checks">
                             <p>Kr</p>
-                            <input type="checkbox" class="update" id="Krypton" checked />
+                            <input type="checkbox" class="update" id="Krypton" />
                         </div>
                         <div class="checks">
                             <p>Ne</p>
@@ -97,7 +97,7 @@
                         </div>
                         <div class="checks">
                             <p>Xe</p>
-                            <input type="checkbox" class="update" id="Xenon" checked />
+                            <input type="checkbox" class="update" id="Xenon" />
                         </div>
                     </div>
                 </div>
@@ -131,7 +131,7 @@
 
                     <div class="data">
                         Object X:
-                        <input id="FindX" type="number" value=512 max="1024" min="0" onchange="setObjectLocation();" onclick="setObjectLocation();" />
+                        <input id="FindX" type="number" value=521 max="1024" min="0" onchange="setObjectLocation();" onclick="setObjectLocation();" />
                         <br>
                         Object Y:
                         <input id="FindY" type="number" value=512 max="1024" min="0" onchange="setObjectLocation();" onclick="setObjectLocation();"/>

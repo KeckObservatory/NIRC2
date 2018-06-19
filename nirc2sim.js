@@ -1,5 +1,6 @@
 /* HIRES Echelle Format Simulator */
 
+// TODO more jquery
 var echellecanvas = document.getElementById('echelle');
 var ecwidth = parseInt($('#container').css("width"));
 echeight = ecwidth;
@@ -74,7 +75,7 @@ var ARCSECONDS_PER_PIXEL = 0.010;
 const MARKER_COLOR = "white";
 
 var color = "red";
-var ZOOM=4.5;
+var ZOOM=11;
 var border_color = 'black';
 
 var detectordim = [0,0];
@@ -286,7 +287,7 @@ function drawExposure(toExport=false) {
     var slit_mm = parseFloat(data[grism][filter][cam]["slit_const"])-xobj_mm;
     var slit_spx = transform_mm_to_screen_pixels([xdetector_pix_to_mm(get_filt_passband(slit_mm)[0]),yobj_mm]);
 
-    $('#Slit').html("Slit: "+(slit_mm).toFixed(4).toString()+" μm ");
+    $('#Slit').html("Slit: "+(slit_mm).toFixed(3).toString()+" μm ");
     $('#Center').html("Centered At:<br>"+data[grism][filter][cam]["slit_const"]+" μm<br>("+center[0]+", "+center[1]+")");
 
     ctx.beginPath();
@@ -324,15 +325,11 @@ function drawExposure(toExport=false) {
         "height": detectordim[1].toString() + 'px'
     });
 
-    // var transform = 100*((detectorpos[1]+detectordim[1]-80)/ecwidth).toFixed(2);
-    // console.log(transform);
-    $('#slit').html(slit_mm.toFixed(4).toString()+" μm ");
-
     var leftOffset = ecwidth-(slit_spx[0])+18;
     var slitheight = (detectorpos[1]-60);
     if (slitheight < Y_LOWER_LIMIT+16) slitheight = Y_LOWER_LIMIT + 16;
 
-    $('#slit').css({
+    $('#slit').html(slit_mm.toFixed(3).toString()+" μm ").css({
         "left": leftOffset.toString() + 'px',
         "top": slitheight.toString() + 'px'
     });
