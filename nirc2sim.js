@@ -4,8 +4,8 @@
 var echellecanvas = document.getElementById('echelle');
 var ecwidth = parseInt($('#container').css("width"));
 echeight = ecwidth;
-echellecanvas.width = ecwidth.toString();
-echellecanvas.height = echeight.toString();
+// echellecanvas.width = ecwidth.toString();
+// echellecanvas.height = echeight.toString();
 var ctx = echellecanvas.getContext("2d");
 var echellerect = echellecanvas.getBoundingClientRect();
 
@@ -198,14 +198,9 @@ function drawExposure(toExport=false) {
     //	yobj, y pixel of object postion along the slit
     //	grism, nirc2 dispersing element
 
-    cam = $('#switchCamera').val();
-    filter = $('#switchFilter').val();
-    grism = $('#switchGrism').val();
-
-    if (!cam || !filter || !grism) {
-        $('.wavelength').hide();
-        return;
-    }
+    cam = $('#switchCamera').val() || "wide";
+    filter = $('#switchFilter').val() || "K";
+    grism = $('#switchGrism').val() || "lowres";
 
     url = ("https://www2.keck.hawaii.edu/inst/nirc2/filters/"+filter.replace(/\d/g, '')+".gif");
 
