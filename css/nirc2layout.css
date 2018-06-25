@@ -262,6 +262,9 @@ select {
 #input {
     margin-left: 15px;
 }
+#lambdainput {
+    width: 75%;
+}
 
 #settings {
     width:30%;
@@ -566,6 +569,10 @@ select:focus, select:active {
     border-top:1px solid black;
     width:100%;
     display:none;
+}
+
+.checks p {
+    margin-bottom: 0.25em;
 }
 
 #zoom-container {
